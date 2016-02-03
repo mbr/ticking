@@ -29,6 +29,7 @@ else:
     # on Python 3.3 or newer, things are much better
     time_src = time.monotonic
 
+# delay: sleep a number of seconds
 delay = time.sleep
 
 

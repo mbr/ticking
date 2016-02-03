@@ -80,17 +80,36 @@ class Clock(object):
 
 
 class Stopwatch(object):
-    TPL = '{0.title}: took {0.total:2.2f}s'
+    TPL_NOT_STARTED = '{self.title}: not started'
+    TPL_FINISHED = '{self.title}: took {self.total:2.2f}s'
+    TPL_IN_PROGRESS = '{self.title}: running since {self.total:2.2f}s'
 
     def __init__(self, title=None):
-        self.title = title
+        """A Stopwatch for measing time.
 
-    def __enter__(self):
+        Call ``begin()`` and ``finish()`` to start/stop. The ``total``
+        property contains the total time elapsed. Can be used as a context
+        manager.
+
+        :param title: An optional title for pretty printing.
+        """
+        self.title = title
+        self.start = None
+        self.end = None
+
+    def begin(self):
+        """Begin time measurement."""
         self.start = time_src()
         return self
 
-    def __exit__(self, type, value, traceback):
+    def finish(self):
+        """End measuring."""
         self.end = time_src()
+
+    __enter__ = begin
+
+    def __exit__(self, type, value, traceback):
+        self.finish()
 
     @contextmanager
     def __call__(self, *args, **kwargs):
@@ -100,7 +119,16 @@ class Stopwatch(object):
 
     @property
     def total(self):
-        return self.end - self.start
+        """Returns the total number of seconds elapsed."""
+        if self.start is None:
+            return 0
+
+        end = self.end if self.end is not None else time_src()
+        return end - self.start
 
     def __str__(self):
-        return self.TPL.format(self)
+        if self.start is None:
+            return self.TPL_NOT_STARTED.format(self)
+        if self.end is not None:
+            return self.TPL_FINISHED.format(self=self)
+        return self.TPL_IN_PROGRESS.format(self=self)

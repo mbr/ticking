@@ -21,3 +21,13 @@ def test_dropped_frames():
     fnum_end = next(iter(clk))[0]
 
     assert fnum_end - fnum_start == 2
+
+
+def test_stopwatch():
+    with ticking.Stopwatch() as sw:
+        time.sleep(1)
+
+        # check that we can print it mid-run
+        '{}'.format(sw)
+
+    assert 0.9 < sw.total < 1.1

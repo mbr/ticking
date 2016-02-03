@@ -34,17 +34,16 @@ delay = time.sleep
 
 
 class Clock(object):
-    def __init__(self, tick_len=1.0, start=None):
+    def __init__(self, tick_len=1.0):
         self.tick_len = tick_len
-        self.restart(start)
-
-    def restart(self, start=None):
-        self.started_at = start or time_src
+        self.started_at = time_src()
 
     def wait_until_next_tick(self, now):
-        now = now or time_src
+        now = now or time_src()
 
         if now < self.started_at:
+            # this should only happen on wraparounds or when using time.time
+            # (Python 2)
             raise ValueError(
                 'Time-traveling detected. Current time is before start time.')
 
@@ -58,7 +57,7 @@ class Clock(object):
 
     def __call__(self):
         while True:
-            now = time_src
+            now = time_src()
 
             yield self.wait_until_next_tick(now), now
 
@@ -70,17 +69,17 @@ class Stopwatch(object):
         self.title = title
 
     def __enter__(self):
-        self.start = time_src
+        self.start = time_src()
         return self
 
     def __exit__(self, type, value, traceback):
-        self.end = time_src
+        self.end = time_src()
 
     @contextmanager
     def __call__(self, *args, **kwargs):
-        self.start = time_src
+        self.start = time_src()
         yield self
-        self.end = time_src
+        self.end = time_src()
 
     @property
     def total(self):

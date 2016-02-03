@@ -44,14 +44,14 @@ class Clock(object):
         self.tick_len = tick_len
         self.started_at = time_src() if start is None else start
 
-    def wait_until_next_tick(self, now):
+    def wait_until_next_tick(self, now=None):
         """Waits until the start of the next tick, then returns that ticks
         number.
 
         Ticks are always relative to the construction of the Clock object.
 
         :return: The tick number of the beginning tick."""
-        now = now or time_src()
+        now = now if now is not None else time_src()
 
         if now < self.started_at:
             # this should only happen on wraparounds or when using time.time
@@ -74,9 +74,8 @@ class Clock(object):
                  relative time of the frame.
         """
         while True:
-            now = time_src()
-
-            yield self.wait_until_next_tick(now), now
+            n = self.wait_until_next_tick()
+            yield n, self.tick_len * n
 
 
 class Stopwatch(object):

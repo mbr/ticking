@@ -6,7 +6,7 @@ different method for retrieving accurate, monotonic clock values (see source
 for detail).
 
 Tested on Python 2.7 and 3.3+. The latter is recommended because the ``time``
-module much better access to OS timing functions.
+module contains much better access to OS timing functions.
 
 Examples
 --------

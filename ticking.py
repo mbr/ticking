@@ -1,8 +1,35 @@
 from contextlib import contextmanager
+import os
 import time
 
-# FIXME: use PEP0418 routines for better accuracy and monotonic time#
-#        source
+import six
+
+# decide on a clock source to use. while we could craft a context that allows
+# configuration on a case-by-case basis, we opt for simplicity here
+
+# time source is our main relative-time function. upon being called, it returns
+# a float denoting some time in seconds without a specified starting point.
+# it should increase monotonically and be as accurate as possible
+time_src = None
+
+if six.PY2:
+    # Python 2 has rather poor time facilities in the stdlib, which
+    # even differ from platform to platform.
+
+    if os.name == 'nt':
+        # on windows, time.clock() on Python 2 returns seconds since the
+        # the first call to time.clock(). we need to call it once
+        time.clock()
+        time_src = time.clock
+    else:
+        # on other systems, we're not so lucky. for example, on linux
+        # time.clock() will wrap around fairly quickly (and does not even
+        # return seconds. we'll have to fall back to good old time.time() and
+        # cross our fingers
+        time_src = time.time
+else:
+    # on Python 3.3 or newer, things are much better
+    time_src = time.monotonic
 
 
 class Clock(object):
@@ -11,10 +38,10 @@ class Clock(object):
         self.restart(start)
 
     def restart(self, start=None):
-        self.started_at = start or time.time()
+        self.started_at = start or time_src
 
     def wait_until_next_tick(self, now):
-        now = now or time.time()
+        now = now or time_src
 
         if now < self.started_at:
             raise ValueError(
@@ -30,7 +57,7 @@ class Clock(object):
 
     def __call__(self):
         while True:
-            now = time.time()
+            now = time_src
 
             yield self.wait_until_next_tick(now), now
 
@@ -42,17 +69,17 @@ class Stopwatch(object):
         self.title = title
 
     def __enter__(self):
-        self.start = time.time()
+        self.start = time_src
         return self
 
     def __exit__(self, type, value, traceback):
-        self.end = time.time()
+        self.end = time_src
 
     @contextmanager
     def __call__(self, *args, **kwargs):
-        self.start = time.time()
+        self.start = time_src
         yield self
-        self.end = time.time()
+        self.end = time_src
 
     @property
     def total(self):

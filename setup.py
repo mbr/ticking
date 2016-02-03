@@ -3,7 +3,7 @@
 
 import os
 
-from setuptools import setup, find_packages
+from setuptools import setup
 
 
 def read(fname):
@@ -21,7 +21,7 @@ setup(
     author_email='git@marcbrinkmann.de',
     url='https://github.com/mbr/ticking',
     license='MIT',
-    packages=find_packages(exclude=['tests']),
+    py_modules=['ticking'],
     install_requires=[],
     classifiers=[
         'Programming Language :: Python :: 2',

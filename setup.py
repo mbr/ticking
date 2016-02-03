@@ -13,7 +13,7 @@ def read(fname):
 
 setup(
     name='ticking',
-    version='0.0.1.dev1',
+    version='0.1.0.dev1',
     description=
     'A small timing utility library, handling framerates and rough benchmarks.',
     long_description=read('README.rst'),
@@ -25,4 +25,5 @@ setup(
     install_requires=[],
     classifiers=[
         'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 3',
     ])

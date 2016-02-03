@@ -33,13 +33,23 @@ delay = time.sleep
 
 
 class Clock(object):
-    def __init__(self, tick_len=1.0):
+    def __init__(self, tick_len=1.0, start=None):
+        """Construct a new clock.
+
+        :param tick_len: Tick length, in seconds.
+        :param started_at: A value returned by ``time_src``. Can be passed to
+                           sync up multiple Clocks.
+        """
         self.tick_len = tick_len
-        self.started_at = time_src()
+        self.started_at = time_src() if start is None else start
 
     def wait_until_next_tick(self, now):
         """Waits until the start of the next tick, then returns that ticks
-        number."""
+        number.
+
+        Ticks are always relative to the construction of the Clock object.
+
+        :return: The tick number of the beginning tick."""
         now = now or time_src()
 
         if now < self.started_at:
@@ -57,6 +67,11 @@ class Clock(object):
         return current_tick + 1
 
     def __iter__(self):
+        """Iterate over ticks.
+
+        :return: An iterator yielding ``(tick_num, t)``, where ``t`` is the
+                 relative time of the frame.
+        """
         while True:
             now = time_src()
 

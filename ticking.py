@@ -30,6 +30,8 @@ else:
     # on Python 3.3 or newer, things are much better
     time_src = time.monotonic
 
+delay = time.sleep
+
 
 class Clock(object):
     def __init__(self, tick_len=1.0, start=None):
@@ -51,7 +53,7 @@ class Clock(object):
 
         assert next_tick_at >= now
 
-        time.sleep(next_tick_at - now)
+        delay(next_tick_at - now)
         return current_tick + 1
 
     def __call__(self):

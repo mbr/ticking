@@ -22,7 +22,7 @@ setup(
     url='https://github.com/mbr/ticking',
     license='MIT',
     packages=find_packages(exclude=['tests']),
-    install_requires=['six'],
+    install_requires=[],
     classifiers=[
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 3',

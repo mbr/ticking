@@ -1,8 +1,7 @@
 from contextlib import contextmanager
 import os
+import sys
 import time
-
-import six
 
 # decide on a clock source to use. while we could craft a context that allows
 # configuration on a case-by-case basis, we opt for simplicity here
@@ -12,7 +11,7 @@ import six
 # it should increase monotonically and be as accurate as possible
 time_src = None
 
-if six.PY2:
+if sys.version_info[0] <= 2:
     # Python 2 has rather poor time facilities in the stdlib, which
     # even differ from platform to platform.
 

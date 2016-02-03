@@ -38,6 +38,8 @@ class Clock(object):
         self.started_at = time_src()
 
     def wait_until_next_tick(self, now):
+        """Waits until the start of the next tick, then returns that ticks
+        number."""
         now = now or time_src()
 
         if now < self.started_at:
@@ -46,15 +48,15 @@ class Clock(object):
             raise ValueError(
                 'Time-traveling detected. Current time is before start time.')
 
+        # which tick are we inside?
         current_tick = int((now - self.started_at) // self.tick_len)
-        next_tick_at = self.started_at + (current_tick + 1) * self.tick_len
 
-        assert next_tick_at >= now
+        next_tick_at = self.started_at + (current_tick + 1) * self.tick_len
 
         delay(next_tick_at - now)
         return current_tick + 1
 
-    def __call__(self):
+    def __iter__(self):
         while True:
             now = time_src()
 

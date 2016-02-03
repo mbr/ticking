@@ -14,7 +14,6 @@ time_src = None
 if sys.version_info[0] <= 2:
     # Python 2 has rather poor time facilities in the stdlib, which
     # even differ from platform to platform.
-
     if os.name == 'nt':
         # on windows, time.clock() on Python 2 returns seconds since the
         # the first call to time.clock(). we need to call it once

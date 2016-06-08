@@ -31,3 +31,11 @@ def test_stopwatch():
         '{}'.format(sw)
 
     assert 0.9 < sw.total < 1.1
+
+
+def test_profiling():
+    with ticking.profiled() as prof:
+        time.sleep(0.1)
+
+    import cProfile as profile
+    assert isinstance(prof, profile.Profile)

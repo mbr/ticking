@@ -131,3 +131,40 @@ class Stopwatch(object):
         if self.end is not None:
             return self.TPL_FINISHED.format(self=self)
         return self.TPL_IN_PROGRESS.format(self=self)
+
+
+# profiling features
+@contextmanager
+def profiled(output_filename=None):
+    """Load profiling extension and create a profile, saving if requested.
+
+    This contextmanager will load the `cProfile` extension, falling back on
+    `profile` if it cannot be imported. A profile will be started before the
+    contained block is executed. Afterwards, the profile will be stopped.
+
+    The profile object is yielded back, but should be used only after the
+    contextmanager.
+
+    If an optional `output_filename` is supplied, upon exiting the context
+    the profile will be saved to the supplied filename.
+
+    :param output_filename: File to store profiling information in.
+    """
+
+    # load profiling only if requested
+    try:
+        import cProfile as profile
+    except ImportError:
+        import profile
+
+    p = profile.Profile()
+
+    # enabled profiling and run
+    p.enable()
+    try:
+        yield p
+    finally:
+        p.disable()
+
+        if output_filename is not None:
+            p.dump_stats(output_filename)

@@ -50,3 +50,24 @@ Measuring time:
     >>> print(sw)
     Demonstration: took 1.30s
 
+Quick in-program profiling:
+
+.. code-block:: pycon
+
+    >>> with ticking.profiled('testprofile.prof'):
+    ...   time.sleep(1.0)
+    ...
+    >>> import pstats
+    >>> pstats.Stats('testprofile.prof').print_stats()
+    Wed Jun  8 11:21:38 2016    testprofile.prof
+
+             5 function calls in 1.001 seconds
+
+       Random listing order was used
+
+       ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+            1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+            1    1.001    1.001    1.001    1.001 {built-in method sleep}
+            1    0.000    0.000    0.000    0.000 /usr/lib/python3.4/contextlib.py:63(__exit__)
+            1    0.000    0.000    0.000    0.000 {built-in method next}
+            1    0.000    0.000    0.000    0.000 /home/marc/Documents/github.com/mbr/ticking/ticking.py:137(profiled)
